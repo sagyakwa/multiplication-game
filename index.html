@@ -7,21 +7,40 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="operations-container">
-<!--    <div class="speech-bubble">I'm a rectangle</div>-->
-    <h2 id="left-operand" class="operand">2</h2>
-    <h3 id="multiplication-symbol">X</h3>
-    <h2 id="right-operand" class="operand">5</h2>
+<div id="nav" class="prevent-highlight">
+    <div id="play-btn-container">
+        <div class="circle">
+            <span class="circle__btn">
+            <ion-icon class="pause" name="pause"></ion-icon>
+            <ion-icon class="play" name="play"></ion-icon>
+            </span>
+            <span class="circle__back-1"></span>
+            <span class="circle__back-2"></span>
+        </div>
+    </div>
+    <div id="icon">
+        <div class="icon__settings">
+            <ion-icon id="settings" name="settings"></ion-icon>
+        </div>
+    </div>
+
 </div>
-<label>
-    <input id="input-box"  name="answer" type="number" autofocus>
+
+<div id="operations-container" class="prevent-highlight">
+    <h2 id="left-operand" class="operand">1</h2>
+    <h3 id="multiplication-symbol">X</h3>
+    <h2 id="right-operand" class="operand">1</h2>
+</div>
+
+<label  class="prevent-highlight">
+    <input id="input-box" name="answer" type="number" autofocus>
 </label>
+
 <script src="index.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
