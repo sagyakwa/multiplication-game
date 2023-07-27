@@ -1,12 +1,13 @@
 :root {
-    --primary-light: #8abdff;
-    --primary: #6d5dfc;
-    --primary-dark: #5b0eeb;
+    --light-blue: #8abdff;
+    --purple: #6d5dfc;
+    --dark-purple: #5b0eeb;
     --white: #fff;
-    --greyLight-1: #e4ebf5;
-    --greyLight-2: #c8d0e7;
-    --greyLight-3: #bec8e4;
-    --greyDark: #000000;
+    --light-grey-1: #e4ebf5;
+    --light-grey-2: #c8d0e7;
+    --light-grey-3: #bec8e4;
+    --dark-grey: #9baacf;
+    --almost-black: #504f4f;
 }
 
 html, body {
@@ -14,7 +15,7 @@ html, body {
     height: 100vh;
     width: 100vw;
     font-family: 'Roboto Condensed', sans-serif;
-    background: var(--greyLight-1);
+    background: var(--light-grey-1);
 }
 
 body {
@@ -26,15 +27,12 @@ body {
 .operand {
     font-size: 15rem;
     cursor: default;
-    margin: 1rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
 }
 
 #multiplication-symbol {
     font-size: 8rem;
-}
-
-.operand, #multiplication-symbol {
-
 }
 
 #operations-container {
@@ -42,7 +40,12 @@ body {
     align-items: center;
     justify-content: center;
     height: 20rem;
+    min-width: 30%;
+    max-width: 60%;
     position: relative;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
 }
 
 .prevent-highlight {
@@ -56,10 +59,19 @@ body {
     font-size: 12rem;
     text-align: center;
     border: none;
+    border-radius: 1rem;
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+    background: none;
     outline: none;
-    color: #001c41;
-    width: 35rem;
-    background: var(--greyLight-1);
+    color: #021a3b;
+    width: 30rem;
+    background: var(--light-grey-1);
+}
+
+
+#input-box:focus {
+    outline: none;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
 }
 
 /* .speech-bubble is set as a child of #operations-container to make positioning
@@ -106,30 +118,6 @@ desired look */
     transform: rotate(10deg);
 }
 
-/* Here the scale changes from 0 to 1. To add the bounciness
-effect, the scale is set to 1.25 midway through the animation
-to give the animation a nicer effect. */
-@keyframes expand-bounce {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.25);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* Here the scale simply goes from 1 back to 0 */
-@keyframes shrink {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
-}
 
 /****** REMOVE ARROWS/SPINNERS FROM TEXT FIELDS ******/
 
@@ -190,17 +178,17 @@ input[type=number] {
     align-items: center;
     border-radius: 50%;
     font-size: 3.2rem;
-    color: var(--primary);
+    color: var(--purple);
     z-index: 300;
-    background: var(--greyLight-1);
-    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    background: var(--light-grey-1);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
     cursor: pointer;
     position: relative;
     transition: all 0.5s ease;
 }
 
 .circle__btn .shadow {
-    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
 }
 
 .circle__btn .play {
@@ -233,8 +221,8 @@ input[type=number] {
 }
 
 .circle__back-1 {
-    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
-    background: linear-gradient(to bottom right, var(--greyLight-2) 0%, var(--white) 100%);
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--light-grey-2), -0.4rem -0.4rem 0.8rem var(--white);
+    background: linear-gradient(to bottom right, var(--light-grey-2) 0%, var(--white) 100%);
     animation: waves 4s linear infinite;
 }
 
@@ -243,7 +231,7 @@ input[type=number] {
 }
 
 .circle__back-2 {
-    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--light-grey-2), -0.4rem -0.4rem 0.8rem var(--white);
     animation: waves 4s linear 2s infinite;
 }
 
@@ -264,29 +252,30 @@ input[type=number] {
     width: 7rem;
     height: 7rem;
     border-radius: 50%;
-    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 3rem;
     cursor: pointer;
-    color: var(--primary);
+    color: var(--purple);
     transition: all 0.5s ease;
 }
 
 .icon__settings:active {
-    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
 }
 
-.circle__btn:hover {
+.circle__btn:hover, .icon__settings:hover {
     transform: scale(1.15);
 }
 
-.icon__settings:hover {
-    transform: scale(1.15);
-    animation: spin 0.5s linear none;
+.icon__settings:hover #settings {
+    animation: spin 2s linear infinite;
 }
 
+
+/***** ANIMATIONS *****/
 
 @keyframes waves {
     0% {
@@ -304,13 +293,38 @@ input[type=number] {
 
 @keyframes spin {
     0% {
-        transform: rotate(120deg) scale(1.12);
+        transform: rotate(120deg);
     }
     50% {
         transform: rotate(240deg);
     }
     100% {
         transform: rotate(360deg);
+    }
+}
+
+/* Here the scale changes from 0 to 1. To add the bounciness
+effect, the scale is set to 1.25 midway through the animation
+to give the animation a nicer effect. */
+@keyframes expand-bounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Here the scale simply goes from 1 back to 0 */
+@keyframes shrink {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
     }
 }
 
