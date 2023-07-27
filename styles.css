@@ -30,6 +30,7 @@ body {
     align-items: center;
     justify-content: center;
     height: 20rem;
+    position: relative;
 }
 
 #input-box {
@@ -42,7 +43,74 @@ body {
     width: 35rem;
 }
 
-/****** REMOVE ARROWS/SPINNERS FROM TEXTFIELDS ******/
+/* #speech-bubble is set as a child of #Rectangle to make positioning
+it easier. #speech-bubble is given an absolute position so that its
+position is relative to the #Rectangle (its parent). Its scale is
+set to zero since it should only appear when the mouse hovers over
+#Rectangle. The 'animation-fill-mode' property is set to 'forwards'
+so that  the scale value stays at 1 after the animation finishes,
+otherwise  #speech-bubble will disappear once the animation finishes.
+The 'animation-name' property is omitted since it's going to be
+set by jQuery instead */
+.speech-bubble {
+    position: absolute;
+    transform-origin: 0 100%;
+    text-align: center;
+    font-size: 5rem;
+    background-color: #5a5a5a;
+    color: white;
+    border-radius: 10px;
+    width: 20rem;
+    padding: 10px;
+    left: 110px;
+    top: -75px;
+    transform: scale(0);
+    animation-fill-mode: forwards;
+}
+/* We need to add a tail to the speech bubble. This is done using
+the ::before pseudo-element. The tail's size is controlled by
+its borders. The right and bottom borders are given a transparent
+color so that the tail still retains its shape while giving the
+desired look */
+.speech-bubble::before {
+    content: "";
+    display: block;
+    width: 0;
+    position: absolute;
+    bottom: -25px;
+    left: 5px;
+    border-style: solid;
+    border-width: 15px;
+    border-color: #000000 transparent transparent rgba(90, 90, 90, 0);
+    transform: rotate(10deg);
+}
+
+/* Here the scale changes from 0 to 1. To add the bounciness
+effect, the scale is set to 1.25 midway through the animation
+to give the animation a nicer effect. */
+@keyframes expand-bounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Here the scale simply goes from 1 back to 0 */
+@keyframes shrink {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+/****** REMOVE ARROWS/SPINNERS FROM TEXT FIELDS ******/
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
