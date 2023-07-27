@@ -2,4 +2,41 @@ html, body {
     margin: 0;
     height: 100vh;
     width: 100vw;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.operand {
+    font-size: 15rem;
+    cursor: default;
+}
+
+#multiplication-symbol {
+    font-size: 8rem;
+}
+
+.operand, #multiplication-symbol {
+
+}
+
+#operations-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20rem;
+}
+
+#input-box {
+    font-family: 'Oswald', sans-serif;;
+    font-size: 12rem;
+    text-align: center;
+    border: none;
+    outline: none;
+    color: #001c41;
 }
