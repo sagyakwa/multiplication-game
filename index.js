@@ -2,21 +2,74 @@ const inputBox = document.getElementById("input-box");
 const operationsContainer = document.getElementById("operations-container");
 const play = document.querySelector('.play');
 const pause = document.querySelector('.pause');
-const playBtn = document.querySelector('.circle__btn');
+const playButton = document.querySelector('.circle__btn');
 const wave1 = document.querySelector('.circle__back-1');
 const wave2 = document.querySelector('.circle__back-2');
-
+const circle = document.querySelector('.circle-shake-animation');
 let maxOperandNumber = 12;
+let countDownTimerIntervalId;
 
-/*  Play button  */
-playBtn.addEventListener('click', function(event) {
-    event.preventDefault();
+
+/**
+ * Toggles play button animation on or off
+ */
+const togglePlayButton = () => {
     pause.classList.toggle('visibility');
     play.classList.toggle('visibility');
-    playBtn.classList.toggle('shadow');
+    playButton.classList.toggle('shadow');
     wave1.classList.toggle('paused');
     wave2.classList.toggle('paused');
+};
+
+playButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    togglePlayButton();
+    toggleBlurAllElements("nav");
+    // Generate random numbers when the page loads
+    document.getElementById("left-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
+    document.getElementById("right-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
+    circle.classList.remove('circle-shake-animation');
+    const countDownTimer = document.getElementById("countdown-timer");
+    if (!wave1.classList.contains('paused')) {
+        inputBox.focus();
+        countDownTimerIntervalId = setInterval(() => {
+            if (countDownTimer.innerText === "0") {
+                inputBox.value = "";
+                inputBox.blur();
+                togglePlayButton();
+                clearInterval(countDownTimerIntervalId);
+            } else {
+                countDownTimer.innerText -= String(1);
+            }
+        }, 1000);
+    } else {
+        inputBox.value = "";
+        clearInterval(countDownTimerIntervalId);
+    }
 });
+
+const toggleBlurAllElements = (exceptionNodeId, blurHeadElement = false, blurBodyElement = false) => {
+    const allElements = document.querySelectorAll('*');
+    const exceptionNodeElement = document.getElementById(exceptionNodeId);
+    for (let element of allElements) {
+        if (!blurHeadElement && element.contains(document.head)) {
+            continue;
+        }
+        if (!blurBodyElement && element.contains(document.body)) {
+            continue;
+        }
+        if (!exceptionNodeElement.contains(element)) {
+            if (!element.style.filter.includes("blur")) {
+                element.style.filter = "blur(3rem)";
+            }
+            else {
+                element.style.filter = "none";
+            }
+        }
+    }
+};
+
+toggleBlurAllElements("nav");
 
 /**
  * Generates a random number between the lowNumber and the highNumber (inclusive)
@@ -28,11 +81,7 @@ const getRandomNumberBetween = (lowNumber, highNumber) => {
     return Math.floor(Math.random() * (highNumber - lowNumber + 1) + lowNumber);
 };
 
-// Generate random numbers when the page loads
-document.getElementById("left-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
-document.getElementById("right-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
-
-// We create this so we can assign an id for every new speech bubble created. A new speech bubble will be created
+// We create this, so we can assign an id for every new speech bubble created. A new speech bubble will be created
 // every time the user submits an answer and will be deleted after its animation.
 let speechBubblePrefixCount = 0;
 
@@ -64,12 +113,13 @@ const playSpeechBubbleAnimation = async (textToDisplay, animationDuration, backg
 };
 
 /**
- * Activates when user presses enter after they type in an answer
+ * Event listener for when a user presses enter after they type in an answer
  */
 inputBox.addEventListener("keyup", async (keyboardEvent) => {
     if ((keyboardEvent.key === "Enter" || keyboardEvent.key === "Return") && inputBox.value.length > 0) {
         const leftOperandElement = document.getElementById("left-operand");
         const rightOperandElement = document.getElementById("right-operand");
+        const scoreValue = document.getElementById("score-value");
         const answer = Number(rightOperandElement.innerText) * Number(leftOperandElement.innerText);
         const userAnswer = Number(inputBox.value);
         let speechBubbleText;
@@ -77,6 +127,7 @@ inputBox.addEventListener("keyup", async (keyboardEvent) => {
         if (userAnswer === answer) {
             speechBubbleText = "Correct!";
             speechBubbleBackgroundColor = "#2dcb72";
+            scoreValue.innerText++;
         } else {
             speechBubbleText = "Wrong!";
             speechBubbleBackgroundColor = "#ef5c5c";

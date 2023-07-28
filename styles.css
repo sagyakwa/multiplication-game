@@ -60,7 +60,6 @@ body {
     text-align: center;
     border: none;
     border-radius: 1rem;
-    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
     background: none;
     outline: none;
     color: #021a3b;
@@ -71,7 +70,6 @@ body {
 
 #input-box:focus {
     outline: none;
-    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
 }
 
 /* .speech-bubble is set as a child of #operations-container to make positioning
@@ -118,21 +116,6 @@ desired look */
     transform: rotate(10deg);
 }
 
-
-/****** REMOVE ARROWS/SPINNERS FROM TEXT FIELDS ******/
-
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Firefox */
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
 /***** NAV *****/
 
 #nav {
@@ -143,6 +126,22 @@ input[type=number] {
     margin-top: 1rem;
     margin-bottom: 4rem;
 }
+
+/***** GAME INFO *****/
+
+#game-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+}
+
+#game-info-container > * {
+    margin: 0 1rem;
+    font-size: 4rem;
+    text-align: center;
+}
+
 
 /****** PLAY BUTTON ******/
 
@@ -165,6 +164,10 @@ input[type=number] {
     justify-items: center;
     align-items: center;
     position: absolute;
+}
+
+.circle-shake-animation {
+    animation: shake 0.3s linear infinite;
 }
 
 .circle__btn {
@@ -249,8 +252,8 @@ input[type=number] {
 }
 
 .icon__settings {
-    width: 7rem;
-    height: 7rem;
+    width: 6rem;
+    height: 6rem;
     border-radius: 50%;
     box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
     display: flex;
@@ -326,5 +329,38 @@ to give the animation a nicer effect. */
     100% {
         transform: scale(0);
     }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(5px);
+    }
+    50% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+/****** REMOVE ARROWS/SPINNERS FROM TEXT FIELDS ******/
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }
 

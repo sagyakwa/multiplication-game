@@ -9,17 +9,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
 </head>
-<body>
+<body id="body">
 <div id="nav" class="prevent-highlight">
     <div id="play-btn-container">
-        <div class="circle">
+        <div class="circle circle-shake-animation">
             <span class="circle__btn">
             <ion-icon class="pause" name="pause"></ion-icon>
             <ion-icon class="play" name="play"></ion-icon>
             </span>
-            <span class="circle__back-1"></span>
-            <span class="circle__back-2"></span>
+            <span class="circle__back-1 paused"></span>
+            <span class="circle__back-2 paused"></span>
         </div>
+    </div>
+    <div id="game-info-container">
+        <p>
+            <span id="countdown-timer">60</span>
+            <span>s</span>
+        </p>
+        <p>
+            <span id="score-label">Score: </span>
+            <span id="score-value">0</span>
+        </p>
     </div>
     <div id="icon">
         <div class="icon__settings">
@@ -35,8 +45,12 @@
     <h2 id="right-operand" class="operand">1</h2>
 </div>
 
+<div id="settings-page">
+    <!-- TODO: make the settings page -->
+</div>
+
 <label  class="prevent-highlight">
-    <input id="input-box" class="input-box" name="answer" type="number" autofocus>
+    <input id="input-box" class="input-box" name="answer" type="number">
 </label>
 
 <script src="index.js"></script>
