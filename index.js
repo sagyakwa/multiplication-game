@@ -6,9 +6,47 @@ const playButton = document.querySelector('.circle__btn');
 const wave1 = document.querySelector('.circle__back-1');
 const wave2 = document.querySelector('.circle__back-2');
 const circle = document.querySelector('.circle-shake-animation');
+const countDownTimer = document.getElementById("countdown-timer");
 let maxOperandNumber = 12;
 let countDownTimerIntervalId;
 
+
+const toggleBlurAllElements = (idsToIgnore = [], blurHeadElement = false, blurBodyElement = false) => {
+    const allElements = document.querySelectorAll('*');
+    let elementsToIgnore = [];
+    // Add the elements and all its descendants to the array of elements we should ignore
+    for (const idToIgnore of idsToIgnore) {
+        const elementToIgnore = document.getElementById(idToIgnore);
+        // Set them to NOT get blurred
+        elementToIgnore.classList.add("ignore-blur");
+        document.getElementById(idToIgnore).querySelectorAll('*').forEach((element) => {
+            element.classList.add("ignore-blur");
+            elementsToIgnore.push(element);
+        });
+    }
+    // Blur all the elements that don't have the .ignore-blur class.
+    for (const element of allElements) {
+        if (!blurHeadElement && element.contains(document.head)) {
+            continue;
+        }
+        if (!blurBodyElement && element.contains(document.body)) {
+            continue;
+        }
+        if (!element.classList.contains("ignore-blur")) {
+            if (!element.style.filter.includes("blur")) {
+                element.style.filter = "blur(3rem)";
+            } else {
+                element.style.filter = "none";
+            }
+        }
+    }
+    // Remove the ignore blur from the elements we've already ignored since we're done blurring the ones we want.
+    for (const element of elementsToIgnore) {
+        element.classList.remove("ignore-blur");
+    }
+};
+
+toggleBlurAllElements(["nav"]);
 
 /**
  * Toggles play button animation on or off
@@ -21,55 +59,50 @@ const togglePlayButton = () => {
     wave2.classList.toggle('paused');
 };
 
+const runTimer = () => {
+    if (countDownTimer.innerText === "0") {
+        inputBox.value = "";
+        inputBox.blur();
+        togglePlayButton();
+        const playAgainButton = document.createElement("div");
+        playAgainButton.id = "play-again-button";
+        playAgainButton.innerHTML = "<p>Play Again</p>";
+        playAgainButton.classList.add("button", "button__primary", "prevent-highlight");
+        document.getElementById("nav").after(playAgainButton);
+        document.getElementById("play-again-button").addEventListener('click', playAgain);
+        toggleBlurAllElements(["play-again-button", "icon", "score"]); // TODO: Not ignoring blur 
+        clearInterval(countDownTimerIntervalId);
+    } else {
+        countDownTimer.innerText -= String(1);
+    }
+};
+
+const playAgain = () => {
+    toggleBlurAllElements(["play-again-button", "icon"]);
+    countDownTimer.innerText = String(60); // TODO: get this from settings page
+    togglePlayButton();
+    inputBox.focus();
+    countDownTimerIntervalId = setInterval(runTimer, 1000);
+    document.getElementById("play-again-button").remove();
+};
+
 playButton.addEventListener('click', async (event) => {
     event.preventDefault();
     togglePlayButton();
-    toggleBlurAllElements("nav");
+    toggleBlurAllElements(["nav"]);
     // Generate random numbers when the page loads
     document.getElementById("left-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
     document.getElementById("right-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
     circle.classList.remove('circle-shake-animation');
-    const countDownTimer = document.getElementById("countdown-timer");
+    
     if (!wave1.classList.contains('paused')) {
         inputBox.focus();
-        countDownTimerIntervalId = setInterval(() => {
-            if (countDownTimer.innerText === "0") {
-                inputBox.value = "";
-                inputBox.blur();
-                togglePlayButton();
-                clearInterval(countDownTimerIntervalId);
-            } else {
-                countDownTimer.innerText -= String(1);
-            }
-        }, 1000);
+        countDownTimerIntervalId = setInterval(runTimer, 1000);
     } else {
         inputBox.value = "";
         clearInterval(countDownTimerIntervalId);
     }
 });
-
-const toggleBlurAllElements = (exceptionNodeId, blurHeadElement = false, blurBodyElement = false) => {
-    const allElements = document.querySelectorAll('*');
-    const exceptionNodeElement = document.getElementById(exceptionNodeId);
-    for (let element of allElements) {
-        if (!blurHeadElement && element.contains(document.head)) {
-            continue;
-        }
-        if (!blurBodyElement && element.contains(document.body)) {
-            continue;
-        }
-        if (!exceptionNodeElement.contains(element)) {
-            if (!element.style.filter.includes("blur")) {
-                element.style.filter = "blur(3rem)";
-            }
-            else {
-                element.style.filter = "none";
-            }
-        }
-    }
-};
-
-toggleBlurAllElements("nav");
 
 /**
  * Generates a random number between the lowNumber and the highNumber (inclusive)
@@ -94,7 +127,7 @@ let speechBubblePrefixCount = 0;
  */
 const playSpeechBubbleAnimation = async (textToDisplay, animationDuration, backgroundColor = "#5a5a5a") => {
     const speechBubbleClassNameWithID = `speech-bubble${speechBubblePrefixCount}`;
-    operationsContainer.innerHTML += `<div id=${speechBubbleClassNameWithID} class="speech-bubble">I'm a rectangle</div>`;
+    operationsContainer.innerHTML += `<div id=${speechBubbleClassNameWithID} class="speech-bubble"></div>`;
     speechBubblePrefixCount++;
     // Restart the prefix count when we reach 10,000. We assume by that time, at least speech-bubble0 is deleted.
     speechBubblePrefixCount = speechBubblePrefixCount > 10000 ? 0 : speechBubblePrefixCount;
