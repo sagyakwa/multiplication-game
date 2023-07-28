@@ -142,6 +142,244 @@ desired look */
     text-align: center;
 }
 
+/******* SETTINGS MODAL *******/
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 1rem 2.5rem;
+    width: auto;
+    min-height: 30rem;
+    border-radius: 0.5rem;
+}
+
+.modal-content > h1 {
+    text-align: center;
+}
+
+.close-button {
+    float: right;
+    width: 1.5rem;
+    line-height: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background-color: lightgray;
+}
+
+.close-button:hover {
+    background-color: darkgray;
+}
+
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+#countdown-settings-container, #max-operand-settings-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 8rem;
+    width: 100%;
+}
+
+/***** RANGE-SLIDER ******/
+
+.slider {
+    grid-column: 3/4;
+    grid-row: 83/100;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    background: var(--light-grey-1);
+    width: 50%;
+}
+
+.slider__box {
+    width: 100%;
+    height: 1rem;
+    cursor: pointer;
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+    border-radius: 1rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.slider__btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--purple);
+    position: absolute;
+    box-shadow: 0 0.1rem 0.3rem 0 var(--light-grey-3);
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 4.156rem;
+}
+
+.slider__btn:hover ~ .slider__tooltip {
+    opacity: 1;
+}
+
+.slider__btn::after {
+    content: '';
+    position: absolute;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.slider__color {
+    height: 100%;
+    width: 28%;
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    border-radius: inherit;
+    background: var(--purple);
+    background: linear-gradient(-1deg, var(--dark-purple) 0%, var(--purple) 50%, var(--light-blue) 100%);
+}
+
+.slider__tooltip {
+    position: absolute;
+    top: 2.6rem;
+    height: 2.5rem;
+    width: 3rem;
+    border-radius: 0.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--purple);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    left: 4.156rem;
+}
+
+/****** NUMBER PICKER ******/
+
+.numberPicker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(-1deg, var(--dark-purple) 0%, var(--purple) 50%, var(--light-blue) 100%);    color: #fff;
+    border-radius: 10px;
+    position: relative;
+    width: 50%;
+    z-index: 10;
+}
+
+.numberPicker__input {
+    width: 100%;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    outline: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 2rem;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.numberPicker__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    background-color: transparent;
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: var(--white);
+    font-size: 2em;
+    padding: 0.5em 0.7em;
+    font-family: inherit;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 20;
+}
+
+.numberPicker__button:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 150%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+    border: 0;
+}
+
+.numberPicker__button:hover {
+    transform: scale(1.25);
+}
+
+.numberPicker__button:active {
+    transform: scale(1);
+}
+
+.numberPicker__button--is-focused:after {
+    opacity: 1;
+}
+
+.numberPicker__button:focus {
+    outline: none;
+}
+
+.numberPicker__button::-moz-focus-inner {
+    border: 0;
+}
+
+.numberPicker__icon {
+    width: 0.5em;
+    fill: #fff;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/***** PLAY AGAIN BUTTON *******/
+#restart-game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#restart-game-button {
+    position: relative;
+    width: 50%;
+    text-align: center;
+}
+
 
 /****** PLAY BUTTON ******/
 

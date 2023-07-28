@@ -10,6 +10,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
 </head>
 <body id="body">
+<div id="settings-modal" class="modal ignore-blur">
+    <div class="modal-content ignore-blur prevent-highlight">
+        <span class="close-button ignore-blur">&times;</span>
+        <h1 class="ignore-blur">Settings</h1>
+        <div id="countdown-settings-container" class="ignore-blur">
+            <h2 class="ignore-blur">Countdown duration:</h2>
+            <div class="slider ignore-blur">
+                <div class="slider__box ignore-blur">
+                    <span class="slider__btn ignore-blur" id="find"></span>
+                    <span class="slider__color ignore-blur"></span>
+                    <span id="slider-tooltip" class="slider__tooltip ignore-blur">60</span>
+                </div>
+            </div>
+        </div>
+        <div id="max-operand-settings-container" class="ignore-blur">
+            <h2 class="ignore-blur">Max number to generate:</h2>
+            <div id="number-picker-container" class="numberPicker ignore-blur">
+                <button id="decrease-max-operand-button" class="ignore-blur numberPicker__button">
+                    <ion-icon name="remove-circle" class="ignore-blur"></ion-icon>
+                </button>
+                <label class="ignore-blur">
+                    <input id="max-operand-input" class="numberPicker__input ignore-blur" maxlength="12" value="12">
+                </label>
+                <button id="increase-max-operand-button"
+                        class="ignore-blur numberPicker__button">
+                    <ion-icon name="add-circle" class="ignore-blur"></ion-icon>
+                </button>
+            </div>
+        </div>
+        <div id="restart-game-container" class="ignore-blur">
+            <div id="restart-game-button" class="button button__primary ignore-blur">
+                <p class="ignore-blur">Restart Game</p>
+            </div>
+        </div>
+    </div>
+
+</div>
 <div id="nav" class="prevent-highlight">
     <div id="play-btn-container">
         <div class="circle circle-shake-animation">
@@ -23,8 +60,8 @@
     </div>
     <div id="game-info-container">
         <p>
-            <span id="countdown-timer">5</span>
-            <span>s</span>
+            <span id="countdown-timer">60</span>
+            <span>sec</span>
         </p>
         <p id="score">
             <span id="score-label">Score: </span>
@@ -38,8 +75,6 @@
     </div>
 </div>
 
-<!--<div id="play-again-button" class="button button__primary prevent-highlight"><p>Play Again</p></div>-->
-
 <div id="operations-container" class="prevent-highlight">
     <h2 id="left-operand" class="operand">1</h2>
     <h3 id="multiplication-symbol">X</h3>
@@ -50,7 +85,7 @@
     <!-- TODO: make the settings page -->
 </div>
 
-<label  class="prevent-highlight">
+<label class="prevent-highlight">
     <input id="input-box" class="input-box" name="answer" type="number">
 </label>
 
