@@ -10,38 +10,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
 </head>
 <body id="body">
-<div id="settings-modal" class="modal ignore-blur">
-    <div class="modal-content ignore-blur prevent-highlight">
-        <span class="close-button ignore-blur">&times;</span>
-        <h1 class="ignore-blur">Settings</h1>
-        <div id="countdown-settings-container" class="ignore-blur">
-            <h2 class="ignore-blur">Countdown duration:</h2>
-            <div class="slider ignore-blur">
-                <div class="slider__box ignore-blur">
-                    <span class="slider__btn ignore-blur" id="find"></span>
-                    <span class="slider__color ignore-blur"></span>
-                    <span id="slider-tooltip" class="slider__tooltip ignore-blur">60</span>
+<div id="settings-modal" class="modal">
+    <div class="modal-content  prevent-highlight">
+        <span class="close-button "><ion-icon name="close-circle-sharp"></ion-icon></span>
+        <h1>Settings</h1>
+        <div id="countdown-settings-container">
+            <h2>Countdown duration:</h2>
+            <div class="slider ">
+                <div class="slider__box ">
+                    <span class="slider__btn " id="find"></span>
+                    <span class="slider__color "></span>
+                    <span id="slider-tooltip" class="slider__tooltip ">60</span>
                 </div>
             </div>
         </div>
-        <div id="max-operand-settings-container" class="ignore-blur">
-            <h2 class="ignore-blur">Max number to generate:</h2>
-            <div id="number-picker-container" class="numberPicker ignore-blur">
-                <button id="decrease-max-operand-button" class="ignore-blur numberPicker__button">
-                    <ion-icon name="remove-circle" class="ignore-blur"></ion-icon>
+        <div id="max-operand-settings-container">
+            <h2>Max number to generate:</h2>
+            <div id="number-picker-container" class="numberPicker ">
+                <button id="decrease-max-operand-button" class=" numberPicker__button">
+                    <ion-icon id="decrease-max-operand-icon" name="remove-circle"></ion-icon>
                 </button>
-                <label class="ignore-blur">
-                    <input id="max-operand-input" class="numberPicker__input ignore-blur" maxlength="12" value="12">
+                <label>
+                    <input id="max-operand-input" class="numberPicker__input " maxlength="12" value="12">
                 </label>
                 <button id="increase-max-operand-button"
-                        class="ignore-blur numberPicker__button">
-                    <ion-icon name="add-circle" class="ignore-blur"></ion-icon>
+                        class=" numberPicker__button">
+                    <ion-icon id="increase-max-operand-icon" name="add-circle"></ion-icon>
                 </button>
             </div>
         </div>
-        <div id="restart-game-container" class="ignore-blur">
-            <div id="restart-game-button" class="button button__primary ignore-blur">
-                <p class="ignore-blur">Restart Game</p>
+        <div id="restart-game-container">
+            <div id="restart-game-button" class="button button__primary ">
+                <p id="restart-game-button-text">Apply & Restart Game</p>
             </div>
         </div>
     </div>
@@ -75,17 +75,13 @@
     </div>
 </div>
 
-<div id="operations-container" class="prevent-highlight">
+<div id="operations-container" class="prevent-highlight will-blur">
     <h2 id="left-operand" class="operand">1</h2>
     <h3 id="multiplication-symbol">X</h3>
     <h2 id="right-operand" class="operand">1</h2>
 </div>
 
-<div id="settings-page">
-    <!-- TODO: make the settings page -->
-</div>
-
-<label class="prevent-highlight">
+<label class="prevent-highlight will-blur">
     <input id="input-box" class="input-box" name="answer" type="number">
 </label>
 

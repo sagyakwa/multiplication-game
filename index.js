@@ -4,77 +4,59 @@ const operationsContainer = document.getElementById("operations-container");
 const play = document.querySelector('.play');
 const pause = document.querySelector('.pause');
 const playButton = document.querySelector('.circle__btn');
-const settingsButton = document.getElementById("icon");
+/* wave animation elements for play button*/
 const wave1 = document.querySelector('.circle__back-1');
 const wave2 = document.querySelector('.circle__back-2');
 const circle = document.querySelector('.circle-shake-animation');
 const modal = document.querySelector(".modal");
+/* settings modal buttons */
+const settingsButton = document.getElementById("icon");
 const closeButton = document.querySelector(".close-button");
-/* rate slider */
+const restartGameButton = document.getElementById("restart-game-button");
+const restartGameButtonText = document.getElementById("restart-game-button-text");
+/* settings modal rate slider */
 const sliderBoxContainer = document.querySelector('.slider__box');
 const sliderButton = document.querySelector('.slider__btn');
 const sliderColor = document.querySelector('.slider__color');
 const sliderToolTip = document.querySelector('.slider__tooltip');
-/* number picker */
-// TODO: Implement these
+/* settings modal number picker */
 const decreaseMaxOperandButton = document.getElementById("decrease-max-operand-button");
 const increaseMaxOperandButton = document.getElementById("increase-max-operand-button");
 const maxOperandInput = document.getElementById("max-operand-input");
-const restartGameButton = document.getElementById("restart-game-button");
-const countDownTimer = document.getElementById("countdown-timer");
+// The maximum number we will generate up to. The settings modal number picker sets this when used.
 let maxOperandNumber = 12;
-let countDownTimerValue = sliderToolTip.innerText;
+const countDownTimer = document.getElementById("countdown-timer");
+// The value we will count down from at the start of every new game. The settings modal rate slider sets this when used.
+let countDownTimerValue = "60";
+// Our global countdown interval id. Used to set and clear the current running interval, which decrements our
+// countDownTimer.
 let countDownTimerIntervalId;
-let gameIsOver = true;
+let mainContentIsBlurred = true;
 // We create this, so we can assign an id for every new speech bubble created. A new speech bubble will be created
-// every time the user submits an answer and will be deleted after its animation.
+// every time the user submits an answer and will be deleted after its animation. The speech bubble tells the user
+// if their answer is correct or wrong.
 let speechBubblePrefixCount = 0;
 
-
-const toggleBlurAllElements = (idsToIgnore = [], blurHeadElement = false, blurBodyElement = false) => {
-    const allElements = document.querySelectorAll('*');
-    let elementsToIgnore = [];
-    // Add the elements and all its descendants to the array of elements we should ignore
-    for (const idToIgnore of idsToIgnore) {
-        const elementToIgnore = document.getElementById(idToIgnore);
-        // Set them to NOT get blurred
-        try {
-            elementToIgnore.classList.add("ignore-blur");
-            elementToIgnore.querySelectorAll('*').forEach((element) => {
-                element.classList.add("ignore-blur");
-                elementsToIgnore.push(element);
-            });
-        } catch (error) {
-            console.log(error);
+/**
+ * The main content of the page except for the nav bar gets blurred when this function is called.
+ *
+ * @param {Boolean} blur sets whether to blur elements or not. If this is not set, elements are blurred by default.
+ */
+const toggleBlurForBlurrableElements = (blur) => {
+    const elementsToBlur = document.getElementsByClassName("will-blur");
+    for (const element of elementsToBlur) {
+        if (blur || blur === undefined) {
+            element.style.filter = "blur(3rem)";
+            mainContentIsBlurred = true;
+        } else {
+            element.style.filter = "none";
+            mainContentIsBlurred = false;
         }
-
-    }
-    // Blur all the elements that don't have the .ignore-blur class.
-    for (const element of allElements) {
-        if (!blurHeadElement && element.contains(document.head)) {
-            continue;
-        }
-        if (!blurBodyElement && element.contains(document.body)) {
-            continue;
-        }
-        if (!element.classList.contains("ignore-blur")) {
-            if (!element.style.filter.includes("blur")) {
-                element.style.filter = "blur(3rem)";
-            } else {
-                element.style.filter = "none";
-            }
-        }
-    }
-    // Remove the ignore blur from the elements we've already ignored since we're done blurring the ones we want.
-    for (const element of elementsToIgnore) {
-        element.classList.remove("ignore-blur");
     }
 };
 
-toggleBlurAllElements(["nav"]);
-
 /**
- * Generates a random number between the lowNumber and the highNumber (inclusive)
+ * Generates a random number between the lowNumber and the highNumber (inclusive).
  *
  * @param {number} lowNumber the low number to generate from
  * @param {number} highNumber the high number to generate to (inclusive)
@@ -84,7 +66,8 @@ const getRandomNumberBetween = (lowNumber, highNumber) => {
 };
 
 /**
- * Plays speech bubble animation
+ * Creates a new element and displays whether the user got the answer correct or wrong. Speech bubbles are deleted
+ * after 2 seconds.
  *
  * @param {string} textToDisplay displays the text inside the speech bubble
  * @param {number} animationDuration indicates how long the speech bubble animation will take
@@ -111,9 +94,9 @@ const playSpeechBubbleAnimation = async (textToDisplay, animationDuration, backg
 };
 
 /**
- * Toggles play button animation on or off
+ * Toggles play button image and animation.
  */
-const togglePlayButton = () => {
+const togglePlayButtonAnimation = () => {
     pause.classList.toggle('visibility');
     play.classList.toggle('visibility');
     playButton.classList.toggle('shadow');
@@ -121,101 +104,163 @@ const togglePlayButton = () => {
     wave2.classList.toggle('paused');
 };
 
-const runTimer = () => {
-    if (countDownTimer.innerText === "0") {
+/**
+ * Starts the countdown timer on the page until it reaches 0. The game is over when it reaches zero and the user has
+ * the option to play again.
+ */
+const runCountDownTimer = () => {
+    if (Number(countDownTimer.innerText) <= 0) {
         inputBox.value = "";
         inputBox.blur();
-        togglePlayButton();
-        gameIsOver = true;
+        togglePlayButtonAnimation();
         const playAgainButton = document.createElement("div");
         playAgainButton.id = "play-again-button";
         playAgainButton.innerHTML = "<p>Play Again</p>";
-        playAgainButton.classList.add("button", "button__primary", "prevent-highlight");
+        playAgainButton.classList.add("button", "button__primary", "prevent-highlight", "play-again-button");
         document.getElementById("nav").after(playAgainButton);
-        document.getElementById("play-again-button").addEventListener('click', playAgain);
-        toggleBlurAllElements(["nav", "play-again-button"]);
+        document.getElementById("play-again-button").addEventListener('click', (mouseEvent) => {
+            toggleBlurForBlurrableElements(!mainContentIsBlurred);
+            togglePlay(mouseEvent);
+        });
+        toggleBlurForBlurrableElements(true);
         clearInterval(countDownTimerIntervalId);
     } else {
         countDownTimer.innerText -= String(1);
-        gameIsOver = false;
     }
 };
 
-const playAgain = () => {
-    toggleBlurAllElements(["play-again-button", "nav"]);
-    countDownTimer.innerText = countDownTimerValue;
-    togglePlayButton();
-    gameIsOver = false;
-    inputBox.focus();
-    countDownTimerIntervalId = setInterval(runTimer, 1000);
-    try {
-        document.getElementById("play-again-button").remove();
-    } catch (error) {
-        console.log(error);
-    }
+/**
+ * Toggles the settings modal view and blurs the main game if necessary.
+ */
+const toggleSettingsModal = () => {
+    modal.classList.toggle("show-modal");
+};
+
+/**
+ * Toggles the play state of the game and performs the necessary operations based on what button was clicked.
+ * (playButton, restartGameButton, or playAgainButton).
+ *
+ * @param mouseEvent the callback function mouse event.
+ */
+const togglePlay = (mouseEvent) => {
+    circle.classList.remove('circle-shake-animation');
+    togglePlayButtonAnimation();
+    document.getElementById("left-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
+    document.getElementById("right-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
     if (modal.classList.contains("show-modal")) {
-        toggleModal();
+        toggleSettingsModal();
         circle.classList.remove("circle-shake-animation");
     }
-};
-
-restartGameButton.addEventListener('click', playAgain);
-const togglePlay = (event) => {
-    console.log(countDownTimer.innerText);
-    if (countDownTimer.innerText !== "0") {
-        event.preventDefault();
-        togglePlayButton();
-        toggleBlurAllElements(["nav"]);
-        // Generate random numbers when the page loads
-        document.getElementById("left-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
-        document.getElementById("right-operand").innerText = String(getRandomNumberBetween(1, maxOperandNumber));
-        circle.classList.remove('circle-shake-animation');
-
+    const playAgainButton = document.getElementById("play-again-button");
+    if (playAgainButton !== null) {
+        playAgainButton.remove();
+    }
+    if (Number(countDownTimer.innerText) <= 0 || (mouseEvent.target === restartGameButton || mouseEvent.target === restartGameButtonText)) {
+        maxOperandNumber = Number(maxOperandInput.value);
+        inputBox.focus();
+        countDownTimerIntervalId = setInterval(runCountDownTimer, 1000);
+        countDownTimer.innerText = countDownTimerValue;
+        return;
+    }
+    if (Number(countDownTimer.innerText) > 0) {
         if (!wave1.classList.contains('paused')) {
             inputBox.focus();
-            countDownTimerIntervalId = setInterval(runTimer, 1000);
+            countDownTimerIntervalId = setInterval(runCountDownTimer, 1000);
         } else {
             inputBox.value = "";
             clearInterval(countDownTimerIntervalId);
         }
-    } else if (countDownTimer.innerText === "0") {
-        const playAgainButton = document.getElementById("play-again-button");
-        if (playAgainButton !== null) {
-            playAgainButton.remove();
-            toggleBlurAllElements(["nav"]);
-            togglePlayButton();
-            countDownTimerIntervalId = setInterval(runTimer, 1000);
-            // countDownTimerValue = sliderToolTip.innerText;
-            countDownTimer.innerText = countDownTimerValue;
-        }
     }
-
 };
 
-playButton.addEventListener('click', togglePlay);
-
-function toggleModal() {
-    modal.classList.toggle("show-modal");
-}
-
-function windowOnClick(event) {
-    if (event.target === modal) {
-        toggleModal();
-    }
-}
-const openSettingsModal = (event) => {
-    if (!wave1.classList.contains("paused") || !wave2.classList.contains("paused")) {
-        togglePlay(event);
-    }
-    toggleModal();
-};
-
-closeButton.addEventListener("click", toggleModal);
-window.addEventListener("click", windowOnClick);
-settingsButton.addEventListener('click', openSettingsModal);
 
 /**
- * Event listener for when a user presses enter after they type in an answer
+ * Takes care of updating the rate slider sliderButton position and color filling in the settings modal.
+ *
+ * @param targetElement the element to be targeted on mouse events. Should be the parent of sliderButton.
+ * @param sliderButton the sliderButton that will slide. Its parent should be the targetElement.
+ */
+const dragElement = (targetElement, sliderButton) => {
+    targetElement.addEventListener('mousedown', (e) => {
+        onMouseMove(e);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+    });
+
+    let onMouseMove = (e) => {
+        e.preventDefault();
+        let targetRect = targetElement.getBoundingClientRect();
+        let x = e.pageX - targetRect.left;
+        if (x > targetRect.width) {
+            x = targetRect.width
+        }
+
+        if (x < 1) {
+            x = 1
+        }
+
+        sliderButton.x = x - 10;
+        sliderButton.style.left = sliderButton.x + 'px';
+
+        // get the position of the sliderButton inside the container (%)
+        let percentPosition = (sliderButton.x + 10) / targetRect.width * 300;
+
+        // color width = position of sliderButton (%)
+        sliderColor.style.width = percentPosition / 3 + "%";
+
+        // move the sliderToolTip when sliderButton moves, and show the sliderToolTip
+        sliderToolTip.style.left = sliderButton.x - 5 + 'px';
+        sliderToolTip.style.opacity = "1";
+
+        // show the percentage in the sliderToolTip
+        countDownTimerValue = String(Math.round(percentPosition));
+        if (Number(countDownTimer.innerText) <= 0) {
+            countDownTimer.innerText = countDownTimerValue;
+        }
+        sliderToolTip.innerText = countDownTimerValue;
+    };
+
+    let onMouseUp = () => {
+        window.removeEventListener('mousemove', onMouseMove);
+        sliderToolTip.style.opacity = "0";
+
+        sliderButton.addEventListener('mouseover', function () {
+            sliderToolTip.style.opacity = "1";
+        });
+
+        sliderButton.addEventListener('mouseout', function () {
+            sliderToolTip.style.opacity = "0";
+        });
+    };
+};
+
+/**
+ * Toggles the settings modal to off when the window is clicked.
+ *
+ * @param mouseEvent the mouse event of the callback function.
+ */
+const windowOnClick = (mouseEvent) => {
+    if (mouseEvent.target === modal) {
+        toggleSettingsModal();
+    }
+};
+
+/**
+ * Increments or decrements the value of the number picker in the settings modal based on the mouse event.
+ *
+ * @param mouseEvent the mouse event of the callback function. Used to determine increment or decrement.
+ */
+const updateMaxOperandInputValue = (mouseEvent) => {
+    if (mouseEvent.target.id === "decrease-max-operand-icon" || mouseEvent.target.id === "decrease-max-operand-button") {
+        maxOperandInput.value -= 1;
+    } else {
+        maxOperandInput.value = String(Number(maxOperandInput.value) + 1);
+    }
+}
+
+/**
+ * Event listener for when a user presses enter on the inputBox. Takes care of all the necessary
+ * processing such as speech bubble result and updating the current score.
  */
 inputBox.addEventListener("keyup", async (keyboardEvent) => {
     if ((keyboardEvent.key === "Enter" || keyboardEvent.key === "Return") && inputBox.value.length > 0) {
@@ -241,63 +286,35 @@ inputBox.addEventListener("keyup", async (keyboardEvent) => {
     }
 });
 
+playButton.addEventListener('click', (event) => {
+    toggleBlurForBlurrableElements(!mainContentIsBlurred);
+    togglePlay(event);
+});
 
-/**
- * Slider Logic
- */
+settingsButton.addEventListener('click', () => {
+    if (!mainContentIsBlurred) {
+        toggleBlurForBlurrableElements(true);
+    }
+    if (!wave1.classList.contains("paused")) {
+        togglePlayButtonAnimation();
+    }
+    clearInterval(countDownTimerIntervalId);
+    toggleSettingsModal();
+});
 
-dragElement = (target, button) => {
-    target.addEventListener('mousedown', (e) => {
-        onMouseMove(e);
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
-    });
+closeButton.addEventListener("click", toggleSettingsModal);
 
-    let onMouseMove = (e) => {
-        e.preventDefault();
-        let targetRect = target.getBoundingClientRect();
-        let x = e.pageX - targetRect.left;
-        if (x > targetRect.width) {
-            x = targetRect.width
-        }
+window.addEventListener("click", windowOnClick);
+restartGameButton.addEventListener('click', (mouseEvent) => {
+    toggleBlurForBlurrableElements(!mainContentIsBlurred);
+    togglePlay(mouseEvent);
+});
 
-        if (x < 1) {
-            x = 1
-        }
+decreaseMaxOperandButton.addEventListener('mousedown', updateMaxOperandInputValue);
 
-        button.x = x - 10;
-        button.style.left = button.x + 'px';
+increaseMaxOperandButton.addEventListener('mousedown', updateMaxOperandInputValue);
 
-        // get the position of the button inside the container (%)
-        let percentPosition = (button.x + 10) / targetRect.width * 300;
-
-        // color width = position of button (%)
-        sliderColor.style.width = percentPosition / 3 + "%";
-
-        // move the sliderToolTip when button moves, and show the sliderToolTip
-        sliderToolTip.style.left = button.x - 5 + 'px';
-        sliderToolTip.style.opacity = "1";
-
-        // show the percentage in the sliderToolTip
-        countDownTimerValue = Math.round(percentPosition);
-        if (gameIsOver) {
-            countDownTimer.innerText = countDownTimerValue;
-        }
-        sliderToolTip.textContent = String(countDownTimerValue);
-    };
-
-    let onMouseUp = () => {
-        window.removeEventListener('mousemove', onMouseMove);
-        sliderToolTip.style.opacity = "0";
-
-        button.addEventListener('mouseover', function () {
-            sliderToolTip.style.opacity = "1";
-        });
-
-        button.addEventListener('mouseout', function () {
-            sliderToolTip.style.opacity = "0";
-        });
-    };
-};
-
+// When game starts the main content will be blurred until the user presses play.
+toggleBlurForBlurrableElements(true);
+// Set the rate slider box and button to be draggable
 dragElement(sliderBoxContainer, sliderButton);
