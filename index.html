@@ -5,9 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiplication Game</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet">
 </head>
-<body>
+<body id="body">
+<div id="settings-modal" class="modal">
+    <div class="modal-content  prevent-highlight">
+        <span class="close-button "><ion-icon name="close-circle-sharp"></ion-icon></span>
+        <h1>Settings</h1>
+        <div id="countdown-settings-container">
+            <h2>Countdown duration:</h2>
+            <div class="slider ">
+                <div class="slider__box ">
+                    <span class="slider__btn " id="find"></span>
+                    <span class="slider__color "></span>
+                    <span id="slider-tooltip" class="slider__tooltip ">60</span>
+                </div>
+            </div>
+        </div>
+        <div id="max-operand-settings-container">
+            <h2>Max number to generate:</h2>
+            <div id="number-picker-container" class="numberPicker ">
+                <button id="decrease-max-operand-button" class=" numberPicker__button">
+                    <ion-icon id="decrease-max-operand-icon" name="remove-circle"></ion-icon>
+                </button>
+                <label>
+                    <input id="max-operand-input" class="numberPicker__input " maxlength="12" value="12">
+                </label>
+                <button id="increase-max-operand-button"
+                        class=" numberPicker__button">
+                    <ion-icon id="increase-max-operand-icon" name="add-circle"></ion-icon>
+                </button>
+            </div>
+        </div>
+        <div id="restart-game-container">
+            <div id="restart-game-button" class="button button__primary ">
+                <p id="restart-game-button-text">Apply & Restart Game</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="nav" class="prevent-highlight">
+    <div id="play-btn-container">
+        <div class="circle circle-shake-animation">
+            <span class="circle__btn">
+            <ion-icon class="pause" name="pause"></ion-icon>
+            <ion-icon class="play" name="play"></ion-icon>
+            </span>
+            <span class="circle__back-1 paused"></span>
+            <span class="circle__back-2 paused"></span>
+        </div>
+    </div>
+    <div id="game-info-container">
+        <p>
+            <span id="countdown-timer">60</span>
+            <span>sec</span>
+        </p>
+        <p id="score">
+            <span id="score-label">Score: </span>
+            <span id="score-value">0</span>
+        </p>
+    </div>
+    <div id="icon">
+        <div class="icon__settings">
+            <ion-icon id="settings" name="settings"></ion-icon>
+        </div>
+    </div>
+</div>
+
+<div id="operations-container" class="prevent-highlight will-blur">
+    <h2 id="left-operand" class="operand">1</h2>
+    <h3 id="multiplication-symbol">X</h3>
+    <h2 id="right-operand" class="operand">1</h2>
+</div>
+
+<label class="prevent-highlight will-blur">
+    <input id="input-box" class="input-box" name="answer" type="number">
+</label>
 
 <script src="index.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

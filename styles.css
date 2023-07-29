@@ -1,5 +1,650 @@
+:root {
+    --light-blue: #8abdff;
+    --purple: #6d5dfc;
+    --dark-purple: #5b0eeb;
+    --white: #fff;
+    --light-grey-1: #e4ebf5;
+    --light-grey-2: #c8d0e7;
+    --light-grey-3: #bec8e4;
+    --dark-grey: #9baacf;
+    --almost-black: #504f4f;
+}
+
 html, body {
     margin: 0;
     height: 100vh;
     width: 100vw;
+    font-family: 'Roboto Condensed', sans-serif;
+    background: var(--light-grey-1);
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.operand {
+    font-size: 15rem;
+    cursor: default;
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+#multiplication-symbol {
+    font-size: 8rem;
+}
+
+#operations-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20rem;
+    min-width: 30%;
+    max-width: 60%;
+    position: relative;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+
+.prevent-highlight {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#input-box {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 12rem;
+    text-align: center;
+    border: none;
+    border-radius: 1rem;
+    background: none;
+    outline: none;
+    color: #021a3b;
+    width: 30rem;
+    background: var(--light-grey-1);
+}
+
+
+#input-box:focus {
+    outline: none;
+}
+
+/* .speech-bubble is set as a child of #operations-container to make positioning
+it easier. #speech-bubble is given an absolute position so that its
+position is relative to the #operations-container (its parent). Its scale is
+set to zero since it should only appear when the mouse hovers over
+#operations-container. The 'animation-fill-mode' property is set to 'forwards'
+so that  the scale value stays at 1 after the animation finishes,
+otherwise  .speech-bubble will disappear once the animation finishes.
+The 'animation-name' property is omitted since it's going to be
+set by js instead */
+.speech-bubble {
+    position: absolute;
+    transform-origin: 0 100%;
+    text-align: center;
+    font-size: 5rem;
+    background-color: #5a5a5a;
+    color: white;
+    border-radius: 10px;
+    width: 20rem;
+    padding: 10px;
+    left: 110px;
+    top: -75px;
+    transform: scale(0);
+    animation-fill-mode: forwards;
+    z-index: 600;
+}
+
+/***** NAV *****/
+
+#nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+}
+
+/***** GAME INFO *****/
+
+#game-info-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 40%;
+}
+
+#game-info-container > * {
+    margin: 0 1rem;
+    font-size: 4rem;
+    text-align: center;
+}
+
+/******* SETTINGS MODAL *******/
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+    z-index: 1000;
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 1rem 2.5rem;
+    width: auto;
+    min-height: 30rem;
+    border-radius: 0.5rem;
+}
+
+.modal-content > h1 {
+    text-align: center;
+}
+
+.close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    float: right;
+    width: 2rem;
+    height: 2rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background-color: lightgray;
+}
+
+.close-button:hover {
+    background-color: darkgray;
+    transform: scale(1.15);
+}
+
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+#countdown-settings-container, #max-operand-settings-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 8rem;
+    width: 100%;
+}
+
+/***** RANGE-SLIDER ******/
+
+.slider {
+    grid-column: 3/4;
+    grid-row: 83/100;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    background: var(--light-grey-1);
+    width: 50%;
+}
+
+.slider__box {
+    width: 100%;
+    height: 1rem;
+    cursor: pointer;
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+    border-radius: 1rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.slider__btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--purple);
+    position: absolute;
+    box-shadow: 0 0.1rem 0.3rem 0 var(--light-grey-3);
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 4.156rem;
+}
+
+.slider__btn:active {
+    animation: spin 1s linear infinite;
+    background: var(--dark-purple);
+}
+
+.slider__btn:hover ~ .slider__tooltip {
+    opacity: 1;
+}
+
+.slider__btn::after {
+    content: '';
+    position: absolute;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.slider__color {
+    height: 100%;
+    width: 25%;
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    border-radius: inherit;
+    background: var(--purple);
+    background: linear-gradient(-1deg, var(--dark-purple) 0%, var(--purple) 50%, var(--light-blue) 100%);
+}
+
+.slider__tooltip {
+    position: absolute;
+    top: 2.6rem;
+    height: 2.5rem;
+    width: 3rem;
+    border-radius: 0.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: var(--purple);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    left: 4.156rem;
+}
+
+/****** NUMBER PICKER ******/
+
+.numberPicker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(-1deg, var(--dark-purple) 0%, var(--purple) 50%, var(--light-blue) 100%);
+    color: #fff;
+    border-radius: 10px;
+    position: relative;
+    width: 50%;
+    z-index: 10;
+}
+
+.numberPicker__input {
+    width: 100%;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    outline: none;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 2rem;
+    min-width: 0;
+    position: relative;
+    z-index: 40;
+}
+
+.numberPicker__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    background-color: transparent;
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    color: var(--white);
+    font-size: 2em;
+    padding: 0.5em 0.7em;
+    font-family: inherit;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 20;
+}
+
+.numberPicker__button:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 150%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+    border: 0;
+}
+
+.numberPicker__button:hover {
+    transform: scale(1.25);
+}
+
+.numberPicker__button:active {
+    transform: scale(1);
+}
+
+.numberPicker__button--is-focused:after {
+    opacity: 1;
+}
+
+.numberPicker__button:focus {
+    outline: none;
+}
+
+.numberPicker__icon {
+    width: 0.5em;
+    fill: #fff;
+    position: relative;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/***** RESTART GAME BUTTON IN SETTINGS MODAL *******/
+
+#restart-game-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#restart-game-button {
+    position: relative;
+    width: 50%;
+    text-align: center;
+}
+
+
+/****** PLAY BUTTON ******/
+
+#play-btn-container {
+    display: grid;
+    position: relative;
+    width: 8rem;
+    height: 8rem;
+}
+
+.circle {
+    grid-column: 2/3;
+    grid-row: 4/6;
+    width: 9rem;
+    height: 100%;
+    justify-self: center;
+    border-radius: 1rem;
+    display: grid;
+    grid-template-rows: 1fr;
+    justify-items: center;
+    align-items: center;
+    position: absolute;
+}
+
+.circle-shake-animation {
+    animation: shake 0.3s linear infinite;
+}
+
+.circle__btn {
+    grid-row: 1/2;
+    grid-column: 1/2;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    margin: 0.6rem;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 3.2rem;
+    color: var(--purple);
+    z-index: 300;
+    background: var(--light-grey-1);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.circle__btn .shadow {
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.circle__btn .play {
+    position: absolute;
+    opacity: 0;
+    transition: all 0.2s linear;
+}
+
+.circle__btn .play.visibility {
+    opacity: 1;
+}
+
+.circle__btn .pause {
+    position: absolute;
+    transition: all 0.2s linear;
+}
+
+.circle__btn .pause.visibility {
+    opacity: 0;
+}
+
+.circle__back-1, .circle__back-2 {
+    grid-row: 1/2;
+    grid-column: 1/2;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    filter: blur(1px);
+    z-index: 100;
+}
+
+.circle__back-1 {
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--light-grey-2), -0.4rem -0.4rem 0.8rem var(--white);
+    background: linear-gradient(to bottom right, var(--light-grey-2) 0%, var(--white) 100%);
+    animation: waves 4s linear infinite;
+}
+
+.circle__back-1.paused {
+    animation-play-state: paused;
+}
+
+.circle__back-2 {
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--light-grey-2), -0.4rem -0.4rem 0.8rem var(--white);
+    animation: waves 4s linear 2s infinite;
+}
+
+.circle__back-2.paused {
+    animation-play-state: paused;
+}
+
+/******* PLAY AGAIN BUTTON *******/
+
+.button {
+    display: flex;
+    width: 15rem;
+    height: 4rem;
+    border-radius: 1rem;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    justify-self: center;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 2rem;
+    transition: ease-in-out 0.3s;
+}
+
+.button:hover {
+    transform: scale(1.25);
+}
+
+.button__primary {
+    grid-column: 1/2;
+    grid-row: 4/5;
+    background: var(--purple);
+    box-shadow: inset 0.2rem 0.2rem 1rem var(--light-blue), inset -0.2rem -0.2rem 1rem var(--dark-purple), 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    color: var(--light-grey-1);
+}
+
+.button__primary:hover {
+    color: var(--white);
+}
+
+.button__primary:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem var(--dark-purple), inset -0.2rem -0.2rem 1rem var(--light-blue);
+    transform: scale(1);
+}
+
+.button__secondary {
+    grid-column: 1/2;
+    grid-row: 83/100;
+    color: var(--dark-grey);
+}
+
+.button__secondary:hover {
+    color: var(--light-blue);
+}
+
+.button__secondary:active {
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.button p {
+    font-size: 1.6rem;
+}
+
+.play-again-button {
+    margin-top: 20rem;
+}
+
+/***** ICONS *****/
+
+.icon {
+    grid-column: 0.75;
+    grid-row: 0.8;
+    display: flex;
+    justify-content: space-between;
+}
+
+.icon__settings {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--light-grey-2), -0.2rem -0.2rem 0.5rem var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    cursor: pointer;
+    color: var(--purple);
+    transition: all 0.5s ease;
+}
+
+.icon__settings:active {
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--light-grey-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.circle__btn:hover, .icon__settings:hover {
+    transform: scale(1.15);
+}
+
+.icon__settings:hover #settings {
+    animation: spin 2s linear infinite;
+}
+
+
+/***** ANIMATIONS *****/
+
+@keyframes waves {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@-webkit-keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Here the scale changes from 0 to 1. To add the bounciness
+effect, the scale is set to 1.25 midway through the animation
+to give the animation a nicer effect. */
+@keyframes expand-bounce {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.25);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Here the scale simply goes from 1 back to 0 */
+@keyframes shrink {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(5px);
+    }
+    50% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+/****** REMOVE ARROWS/SPINNERS FROM TEXT FIELDS ******/
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
